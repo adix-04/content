@@ -1,0 +1,25 @@
+documentation_complete: true
+
+title: 'Ensure sshd Service Systemd Exposure Level Is Acceptable'
+
+description: |-
+    The overall exposure level reported by
+    <tt>systemd-analyze security sshd.service</tt> must be at or below
+    the accepted threshold. Harden the unit with a drop-in file in
+    <tt>/etc/systemd/system/sshd.service.d/</tt>.
+
+rationale: |-
+    systemd can sandbox a service through unit settings such as
+    <tt>ProtectKernelTunables</tt> and <tt>PrivateTmp</tt>. A lower
+    exposure score means a compromised sshd can do less damage.
+
+severity: medium
+
+platform: package[openssh-server]
+
+ocil_clause: 'the overall exposure level is above the threshold'
+
+ocil: |-
+    Run the following command:
+    <pre>$ systemd-analyze security sshd.service</pre>
+    The score on the last line should not exceed the accepted threshold.

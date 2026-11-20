@@ -1,0 +1,21 @@
+documentation_complete: true
+
+title: 'Ensure NetworkManager Service Is Active'
+
+description: |-
+    The <tt>NetworkManager.service</tt> systemd unit must be in the
+    <tt>active</tt> state.
+
+rationale: |-
+    NetworkManager manages the system's network connections. If the service
+    is not running, network configuration is not applied.
+
+severity: medium
+
+platform: machine
+
+template:
+    name: service_enabled
+    vars:
+        servicename: NetworkManager
+        packagename: NetworkManager

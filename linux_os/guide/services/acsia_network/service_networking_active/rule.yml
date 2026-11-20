@@ -1,0 +1,21 @@
+documentation_complete: true
+
+title: 'Ensure networking Service Is Active'
+
+description: |-
+    The <tt>networking.target</tt> systemd unit must be in the
+    <tt>active</tt> state.
+
+rationale: |-
+    The networking service brings up the configured network interfaces.
+    If it is not active, interfaces may not be configured.
+
+severity: medium
+
+platform: machine
+
+template:
+    name: service_enabled
+    vars:
+        servicename: networking
+        packagename: ifupdown
