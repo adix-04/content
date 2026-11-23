@@ -1,0 +1,75 @@
+name: Build RHEL 10 SCAP content
+
+on:
+  push:
+    paths:
+      - 'linux_os/**'
+      - 'components/**'
+      - 'shared/**'
+      - 'products/rhel10/**'
+      - 'product_properties/**'
+      - 'ssg/**'
+      - 'cmake/**'
+      - 'build-scripts/**'
+      - '.github/workflows/build-rhel10.yml'
+      - 'CMakeLists.txt'
+      - 'build_product'
+      - 'build_config.yml.in'
+      - 'requirements-base.txt'
+      - 'requirements.txt'
+  pull_request:
+    paths:
+      - 'linux_os/**'
+      - 'components/**'
+      - 'shared/**'
+      - 'products/rhel10/**'
+      - 'product_properties/**'
+      - 'ssg/**'
+      - 'cmake/**'
+      - 'build-scripts/**'
+      - '.github/workflows/build-rhel10.yml'
+      - 'CMakeLists.txt'
+      - 'build_product'
+      - 'build_config.yml.in'
+      - 'requirements-base.txt'
+      - 'requirements.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build RHEL 10 data stream
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            cmake \
+            ninja-build \
+            openscap-utils \
+            libxml2-utils \
+            xsltproc \
+            python3-jinja2 \
+            python3-setuptools \
+            python3-yaml
+
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+
+      - name: Build RHEL 10 data stream
+        run: ./build_product rhel10 --datastream-only
+
+      - name: Upload SCAP data stream
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v4
+        with:
+          name: rhel10-scap-datastream
+          path: build/ssg-rhel10-ds.xml
+          if-no-files-found: error
+          retention-days: 14

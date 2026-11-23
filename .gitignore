@@ -8,7 +8,8 @@
 # Build files
 rpmbuild
 container_build/
-build/
+/build/*
+!/build/.gitkeep
 
 # Ignore docs generated API sources
 docs/api/
