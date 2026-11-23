@@ -72,4 +72,48 @@ jobs:
           name: rhel10-scap-datastream
           path: build/ssg-rhel10-ds.xml
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 90
+
+  publish-pages:
+    name: Publish latest data stream
+    if: >-
+      github.ref_name == github.event.repository.default_branch &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download SCAP data stream
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v4
+        with:
+          name: rhel10-scap-datastream
+          path: public
+
+      - name: Add download page
+        run: |
+          cat > public/index.html <<'HTML'
+          <!doctype html>
+          <html lang="en">
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>RHEL 10 SCAP data stream</title>
+            <h1>RHEL 10 SCAP data stream</h1>
+            <p><a href="./ssg-rhel10-ds.xml" download>Download the latest data stream</a></p>
+          </html>
+          HTML
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: public
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
