@@ -1,0 +1,37 @@
+documentation_complete: true
+
+title: 'Restrict Administrator Privileges to Dedicated Administrator Accounts'
+
+description: |-
+    Administrative privileges must be restricted to dedicated
+    administrator accounts. Only the root account should have
+    UID 0 privileges on the system.
+
+    Any additional account assigned UID 0 effectively has
+    unrestricted administrative access and bypasses individual
+    accountability requirements.
+
+rationale: |-
+    Multiple accounts with UID 0 make it difficult to
+    attribute administrative actions to a specific individual.
+
+    Restricting UID 0 privileges to the root account improves
+    accountability and reduces the risk of unauthorized
+    administrative access.
+
+severity: medium
+
+platform: machine
+
+ocil_clause: 'accounts other than root have UID 0'
+
+ocil: |-
+    Run the following command:
+
+    <pre>$ awk -F: '($3 == 0) { print $1 }' /etc/passwd</pre>
+
+    The command should return only:
+
+    <pre>root</pre>
+
+    If any other account is listed, this is a finding.
