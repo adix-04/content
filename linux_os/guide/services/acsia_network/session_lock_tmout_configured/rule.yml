@@ -1,0 +1,26 @@
+documentation_complete: true
+
+title: 'Configure Automatic Session Locking (Shell Idle Timeout)'
+
+description: |-
+    Interactive shell sessions must be terminated after a period of
+    inactivity of no more than 900 seconds (15 minutes). This is enforced by
+    setting the <tt>TMOUT</tt> variable as read-only in
+    <tt>/etc/profile.d/tmout.sh</tt>.
+
+rationale: |-
+    Unattended sessions left open can be used by anyone with physical or
+    remote access to the terminal. Closing idle sessions automatically
+    reduces that exposure.
+
+severity: medium
+
+platform: machine
+
+ocil_clause: 'TMOUT is not set to 900 or less, or is not read-only'
+
+ocil: |-
+    Run the following command:
+    <pre>$ grep -rE 'TMOUT' /etc/profile /etc/profile.d/</pre>
+    The output should show <tt>TMOUT</tt> set to a value from 1 to 900 and
+    declared <tt>readonly</tt>.

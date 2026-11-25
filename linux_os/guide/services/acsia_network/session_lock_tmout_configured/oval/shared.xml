@@ -1,0 +1,40 @@
+<def-group>
+  <definition class="compliance" id="session_lock_tmout_configured" version="1">
+    {{{ oval_metadata("TMOUT must be set to 900 seconds or less and be read-only.", rule_title=rule_title) }}}
+    <criteria operator="AND">
+      <criterion comment="TMOUT is set between 1 and 900"
+                 test_ref="test_session_lock_tmout_value" />
+      <criterion comment="TMOUT is read-only"
+                 test_ref="test_session_lock_tmout_readonly" />
+    </criteria>
+  </definition>
+
+  <ind:textfilecontent54_test id="test_session_lock_tmout_value" version="1"
+      check="all" check_existence="at_least_one_exists"
+      comment="TMOUT is set to 900 or less">
+    <ind:object object_ref="object_session_lock_tmout_value" />
+    <ind:state state_ref="state_session_lock_tmout_value" />
+  </ind:textfilecontent54_test>
+
+  <ind:textfilecontent54_object id="object_session_lock_tmout_value" version="1">
+    <ind:filepath operation="pattern match">^/etc/(profile|profile\.d/.*\.sh)$</ind:filepath>
+    <ind:pattern operation="pattern match">^[ \t]*(?:readonly[ \t]+|export[ \t]+)?TMOUT=([1-9][0-9]*)[ \t]*$</ind:pattern>
+    <ind:instance datatype="int">1</ind:instance>
+  </ind:textfilecontent54_object>
+
+  <ind:textfilecontent54_state id="state_session_lock_tmout_value" version="1">
+    <ind:subexpression datatype="int" operation="less than or equal">900</ind:subexpression>
+  </ind:textfilecontent54_state>
+
+  <ind:textfilecontent54_test id="test_session_lock_tmout_readonly" version="1"
+      check="all" check_existence="at_least_one_exists"
+      comment="TMOUT is declared read-only">
+    <ind:object object_ref="object_session_lock_tmout_readonly" />
+  </ind:textfilecontent54_test>
+
+  <ind:textfilecontent54_object id="object_session_lock_tmout_readonly" version="1">
+    <ind:filepath operation="pattern match">^/etc/(profile|profile\.d/.*\.sh)$</ind:filepath>
+    <ind:pattern operation="pattern match">^[ \t]*(?:readonly[ \t]+|declare[ \t]+-r[ \t]+)TMOUT\b</ind:pattern>
+    <ind:instance datatype="int">1</ind:instance>
+  </ind:textfilecontent54_object>
+</def-group>
