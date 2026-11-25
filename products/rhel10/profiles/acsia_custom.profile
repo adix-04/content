@@ -7,3 +7,4 @@ selections:
  - service_networking_active
  - service_sshd_systemd_exposure_level
  - service_Restrict_Admin_Privileges
+ - session_lock_timeout_configured
