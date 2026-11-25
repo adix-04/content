@@ -1,5 +1,5 @@
 <def-group>
-  <definition class="compliance" id="session_lock_tmout_configured" version="1">
+  <definition class="compliance" id="session_lock_timeout_configured" version="1">
     {{{ oval_metadata("TMOUT must be set to 900 seconds or less and be read-only.", rule_title=rule_title) }}}
     <criteria operator="AND">
       <criterion comment="TMOUT is set between 1 and 900"
